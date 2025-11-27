@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<table style="border: 1px solid black; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th style="border: 1px solid black;">ID</th>
+        <th style="border: 1px solid black;">Имя</th>
+        <th style="border: 1px solid black;">Фамилия</th>
+        <th style="border: 1px solid black;">E-mail</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${list_users}">
+        <td style="border: 1px solid black;" th:text="${user.getId()}"></td>
+        <td style="border: 1px solid black;" th:text="${user.getName()}"></td>
+        <td style="border: 1px solid black;"> <a th:href="@{/user/edit(id=${user.getId()})}" th:text="${user.getLastname()}">LASTNAME</a></td>
+        <td style="border: 1px solid black;" th:text="${user.getEmail()}"></td>
+    </tr>
+    </tbody>
+</table>
+<br/>
+<form th:method="GET" th:action="@{/new}">
+    <input type="submit" value="Добавить пользователя"/>
+</form>
+
+</body>
+</html>
