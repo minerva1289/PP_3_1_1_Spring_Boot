@@ -1,53 +1,59 @@
 package org.minerva.PP_3_1_1_Spring_Boot.service;
 
-import org.minerva.PP_3_1_1_Spring_Boot.dao.UserDao;
+import org.minerva.PP_3_1_1_Spring_Boot.repository.UserRepository;
 import org.minerva.PP_3_1_1_Spring_Boot.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UserServiceImp implements UserService {
 
-    @Autowired
-    UserDao userDao;
+    private UserRepository userRepository;
+    private final Logger logger;
 
-    @Override
+    public UserServiceImp (UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.logger = LoggerFactory.getLogger(this.getClass());
+    }
+
     @Transactional
     public User getUserByID (long id) {
-        return userDao.getUserByID(id);
+        return userRepository.findById(id).orElse(null);
     }
 
-    @Override
     @Transactional
     public List <User> getAllUsers () {
-        return userDao.getAllUsers();
+        Iterable <User> users = userRepository.findAll();
+        List <User> userList = StreamSupport.stream(users.spliterator(), false).toList();
+        logger.info("Found {} users", userList.size());
+        return userList;
     }
 
-    @Override
     @Transactional
     public void addUser (User user) {
-        userDao.addUser(user);
+        logger.debug("Try save/update user {}", user);
+        User result = userRepository.save(user);
+        logger.info("User saved/updated: {}", result);
     }
 
-    @Override
-    @Transactional
-    public User updateUser (User user) {
-        return userDao.updateUser(user);
-    }
-
-    @Override
     @Transactional
     public void deleteUser (long id) {
-        userDao.deleteUser(id);
+        userRepository.deleteById(id);
+        logger.info("User with ID={} deleted", id);
     }
 
-    @Override
     @Transactional
     public boolean existsEmail (String email) {
-        return userDao.existsEmail(email);
+        logger.debug("Check if user with email {} exists", email);
+        Optional <User> user = userRepository.findByEmail(email);
+        logger.debug("User with email exists - {}", user.isPresent());
+        return user.isPresent();
     }
 }

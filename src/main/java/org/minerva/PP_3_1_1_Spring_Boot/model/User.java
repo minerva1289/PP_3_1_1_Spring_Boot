@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table (name = "users")
-@Component
 public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -43,6 +41,7 @@ public class User {
     }
 
     public User (String name, String lastname, String email) {
+        this();
         this.name = name;
         this.lastname = lastname;
         this.email = email;

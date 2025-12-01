@@ -12,8 +12,6 @@ public interface UserService {
 
     void addUser (User user);
 
-    User updateUser (User user);
-
     void deleteUser (long id);
 
     boolean existsEmail (String email);
